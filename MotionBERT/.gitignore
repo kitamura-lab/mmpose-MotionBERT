@@ -7,7 +7,6 @@ data
 /vis*
 !lib/data
 .DS_Store
-checkpoint*
 arun_log
 doodle
 logs
