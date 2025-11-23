@@ -6,11 +6,16 @@ import numpy as np
 
 from mmpose.apis import MMPoseInferencer
 
+args = sys.argv
+
 # --- 1. 定数の定義 ---
 
 # 動画ファイルパス (このスクリプトからの相対パス)
 # VIDEO_PATH = '1104-16-0_cutted_1.mp4'
-VIDEO_PATH = 'input/zhang.mp4'
+if len(args) >= 2:
+    VIDEO_PATH = args[1]
+else:
+    VIDEO_PATH = 'input/zhang.mp4'
 
 # 現在のスクリプトが存在するディレクトリを自動取得
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))

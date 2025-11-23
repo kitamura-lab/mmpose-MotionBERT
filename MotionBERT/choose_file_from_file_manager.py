@@ -17,6 +17,8 @@ from lib.utils.vismo import render_and_save
 import tkinter as tk
 from tkinter import filedialog
 
+
+
 def parse_args():
     parser = argparse.ArgumentParser()
     # 設定とモデルパスは保持
@@ -25,15 +27,18 @@ def parse_args():
     # parser.add_argument('-e', '--evaluate', default='checkpoint/pose3d/FT_MB_lite_MB_ft_h36m_global_lite/latest_epoch-lite.bin', type=str, metavar='FILENAME', help='checkpoint to evaluate (file name)')
     parser.add_argument('-e', '--evaluate', default='checkpoint/pose3d/FT_MB_lite_MB_ft_h36m_global_lite/best_epoch.bin', type=str, metavar='FILENAME', help='checkpoint to evaluate (file name)')
     # -j, -v のコマンドライン引数を削除し、-o も必須ではなくす (select_files で設定するため)
-    parser.add_argument('-o', '--out_path', type=str, default=None, help='output path')
+    # parser.add_argument('-o', '--out_path', type=str, default=None, help='output path')
+    parser.add_argument('-o', '--out_path', type=str, default='output', help='output path')
     parser.add_argument('--pixel', action='store_true', help='align with pixle coordinates')
     parser.add_argument('--focus', type=int, default=None, help='target person id')
     parser.add_argument('--clip_len', type=int, default=50, help='clip length for network input')
+    parser.add_argument('--input', type=str, default=None, help='Path to input video file.')
     
     # ファイルダイアログで選択されたパスを保存するために、2つの新しい属性を追加
     opts = parser.parse_args()
     opts.vid_path = None
     opts.json_path = None
+    print(opts.input)
     return opts
 
 def select_files(opts):
@@ -42,15 +47,19 @@ def select_files(opts):
     root.withdraw() # メインウィンドウを非表示
 
     # --- 1. 動画ファイルの選択 ---
-    print("動画ファイル (.mp4, .avi など) を選択してください:")
-    # opts.vid_path = "1104-16-0_cutted_1.mp4"
-    opts.vid_path = filedialog.askopenfilename(
-        title="1/3 動画ファイルを選択",
-        filetypes=[("Video files", "*.mp4;*.avi;*.mov"), ("All files", "*.*")]
-    )
-    if not opts.vid_path:
-        print("動画ファイルが選択されませんでした。プログラムを終了します。")
-        exit()
+    # args = sys.argv
+    if opts.input is not None:
+        opts.vid_path = opts.input
+    else:
+        print("動画ファイル (.mp4, .avi など) を選択してください:")
+        # opts.vid_path = "1104-16-0_cutted_1.mp4"
+        opts.vid_path = filedialog.askopenfilename(
+            title="1/3 動画ファイルを選択",
+            filetypes=[("Video files", "*.mp4;*.avi;*.mov"), ("All files", "*.*")]
+        )
+        if not opts.vid_path:
+            print("動画ファイルが選択されませんでした。プログラムを終了します。")
+            exit()
     print(f"選択された動画: {opts.vid_path}")
 
     # --- 2. JSON ファイルの選択 ---
@@ -70,14 +79,14 @@ def select_files(opts):
     opts.output_prefix = os.path.splitext(json_filename_with_ext)[0] + '_3D'
     
     # --- 3. 出力フォルダの選択 (追加部分) ---
-    print("\n3D 結果ファイルの出力先フォルダを選択してください:")
-    opts.out_path = "output"
-    # opts.out_path = filedialog.askdirectory(
-    #     title="3/3 出力フォルダを選択"
-    # )
-    if not opts.out_path:
-        print("出力フォルダが選択されませんでした。プログラムを終了します。")
-        exit()
+    # print("\n3D 結果ファイルの出力先フォルダを選択してください:")
+    # opts.out_path = "output"
+    # # opts.out_path = filedialog.askdirectory(
+    # #     title="3/3 出力フォルダを選択"
+    # # )
+    # if not opts.out_path:
+    #     print("出力フォルダが選択されませんでした。プログラムを終了します。")
+    #     exit()
     print(f"選択された出力フォルダ: {opts.out_path}")
 
 
@@ -86,6 +95,7 @@ opts = parse_args()
 select_files(opts) # ファイルとフォルダの選択関数を呼び出し
 
 args = get_config(opts.config)
+# print(opts.input)
 
 # ... (モデルのロードと初期化部分は変更なし) ...
 model_backbone = load_backbone(args)
