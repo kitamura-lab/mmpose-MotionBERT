@@ -1,3 +1,4 @@
 mmpose/td-hm_hrnet-w48_dark-8xb32-210e_coco-384x288-39c3c381_20220916.pth
 mmpose/td-hm_hrnet-w48_dark-8xb32-210e_coco-384x288.py
 output/
+MotionBERT/checkpoint/pose3d/FT_MB_lite_MB_ft_h36m_global_lite/*.bin
