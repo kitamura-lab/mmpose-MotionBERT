@@ -7,3 +7,9 @@
 .\run.ps1 動画へのパス
 ```
 推定結果はoutputフォルダに保存されます．
+
+# 推定結果の表示
+```
+python show_npy.py
+```
+このプログラムはpython3.12で動作します．また`pip install matplotlib`を事前に実行しておく必要があります．
